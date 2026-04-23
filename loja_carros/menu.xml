@@ -1,0 +1,33 @@
+<menu>
+    <menuitem label='Loja de Carros'>
+        <icon>fa:home fa-fw</icon>
+        <menu>
+            <menuitem label='Dashboard'>
+                <icon>fa:life-ring fa-fw</icon>
+                <action>Dashboard</action>
+            </menuitem>
+            <menuitem label='Carros'>
+                <icon>fa:car fa-fw</icon>
+                <action>CarroList</action>
+            </menuitem>
+            <menuitem label='Vendas'>
+                <icon>fa:shopping-cart fa-fw</icon>
+                <action>VendaList</action>
+            </menuitem>
+        </menu>
+    </menuitem>
+    <menuitem label='Configuração'>
+        <icon>fa:cog fa-fw</icon>
+        <menu>
+            <menuitem label='Ver módulos'>
+                <icon>fa:cube fa-fw</icon>
+                <action>SystemModulesCheckView</action>
+            </menuitem>
+            
+            <menuitem label='Setup PHP'>
+                <icon>fa:code fa-fw</icon>
+                <action>SystemPHPInfoView</action>
+            </menuitem>
+        </menu>
+    </menuitem>
+</menu>
