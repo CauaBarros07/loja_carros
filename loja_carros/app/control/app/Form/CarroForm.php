@@ -1,21 +1,15 @@
 <?php
 
-
-
 use Adianti\Control\TPage;
 use Adianti\Control\TAction;
-use Adianti\Control\TApplication; // Certifique-se que esta linha está EXATAMENTE assim
 use Adianti\Database\TTransaction;
 use Adianti\Widget\Form\TEntry;
-use Adianti\Widget\Form\TDate;
 use Adianti\Widget\Form\TNumeric;
 use Adianti\Widget\Form\TLabel;
-use Adianti\Widget\Wrapper\TDBCombo; 
 use Adianti\Validator\TRequiredValidator;
 use Adianti\Wrapper\BootstrapFormBuilder;
 use Adianti\Widget\Dialog\TMessage;
 use Adianti\Widget\Container\TVBox;
-
 
 class CarroForm extends TPage
 {
@@ -28,33 +22,24 @@ class CarroForm extends TPage
         $this->form = new BootstrapFormBuilder('form_carro');
         $this->form->setFormTitle('Cadastro de Carro');
 
-        
         $id     = new TEntry('id');
         $brand  = new TEntry('brand');
         $model  = new TEntry('model');
         $year   = new TEntry('year');
         $price  = new TNumeric('price', 2, ',', '.', true);
-        $status = new TCombo('status');
 
-        
         $id->setEditable(FALSE);
+        
         $id->setSize('100%');
         $brand->setSize('100%');
         $model->setSize('100%');
         $year->setSize('100%');
         $price->setSize('100%');
-        $status->setSize('100%');
 
-        $status->addItems(['Disponível' => 'Disponível', 'Vendido' => 'Vendido']);
-        $status->setDefaultOption(FALSE);
-
-        
         $this->form->addFields([new TLabel('ID')], [$id]);
         $this->form->addFields([new TLabel('Marca')], [$brand], [new TLabel('Modelo')], [$model]);
         $this->form->addFields([new TLabel('Ano')], [$year], [new TLabel('Preço')], [$price]);
-        $this->form->addFields([new TLabel('Status')], [$status]);
 
-        
         $brand->addValidation('Marca', new TRequiredValidator);
         $model->addValidation('Modelo', new TRequiredValidator);
         $price->addValidation('Preço', new TRequiredValidator);
@@ -88,9 +73,14 @@ class CarroForm extends TPage
             TTransaction::open('sample');
             $this->form->validate();
 
-            $carro = new Carro;
             $data = $this->form->getData();
+            $carro = new Carro;
             $carro->fromArray((array) $data);
+
+            if (empty($carro->id)) {
+                $carro->status = 'Disponível';
+            }
+
             $carro->store();
 
             TTransaction::close();

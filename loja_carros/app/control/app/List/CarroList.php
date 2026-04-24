@@ -79,17 +79,38 @@ class CarroList extends TPage
         TTransaction::close();
     }
 
-    public static function onDelete($param)
+   public static function onDelete($param)
+    {
+        $action = new TAction([__CLASS__, 'Delete']);
+        $action->setParameters($param);
+        new TQuestion('Deseja realmente excluir o veículo?', $action);
+    }
+
+   
+    public static function Delete($param)
     {
         try {
             TTransaction::open('sample');
-            $carro = new Carro($param['id']);
+            
+            $key = $param['id'];
+            $carro = new Carro($key);
+
+            if ($carro->status == 'Vendido') {
+                throw new Exception('Não é permitido excluir um carro com status "Vendido"!');
+            }
+
             $carro->delete();
+            
             TTransaction::close();
-            TApplication::loadPage('CarroList', 'onReload');
-            new TMessage('info', "Carro excluído com sucesso!");
+
+
+            \TApplication::loadPage('CarroList', 'onReload');
+            
+            new TMessage('info', 'Registro excluído com sucesso!');
+            
         } catch (Exception $e) {
             new TMessage('error', $e->getMessage());
+            TTransaction::rollback();
         }
     }
 
