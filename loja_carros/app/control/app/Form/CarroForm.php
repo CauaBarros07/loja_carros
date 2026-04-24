@@ -28,7 +28,7 @@ class CarroForm extends TPage
         $this->form = new BootstrapFormBuilder('form_carro');
         $this->form->setFormTitle('Cadastro de Carro');
 
-        // Cria os campos conforme requisitos
+        
         $id     = new TEntry('id');
         $brand  = new TEntry('brand');
         $model  = new TEntry('model');
@@ -36,7 +36,7 @@ class CarroForm extends TPage
         $price  = new TNumeric('price', 2, ',', '.', true);
         $status = new TCombo('status');
 
-        // Configurações
+        
         $id->setEditable(FALSE);
         $id->setSize('100%');
         $brand->setSize('100%');
@@ -48,13 +48,13 @@ class CarroForm extends TPage
         $status->addItems(['Disponível' => 'Disponível', 'Vendido' => 'Vendido']);
         $status->setDefaultOption(FALSE);
 
-        // Adiciona campos ao formulário
+        
         $this->form->addFields([new TLabel('ID')], [$id]);
         $this->form->addFields([new TLabel('Marca')], [$brand], [new TLabel('Modelo')], [$model]);
         $this->form->addFields([new TLabel('Ano')], [$year], [new TLabel('Preço')], [$price]);
         $this->form->addFields([new TLabel('Status')], [$status]);
 
-        // Validações obrigatórias
+        
         $brand->addValidation('Marca', new TRequiredValidator);
         $model->addValidation('Modelo', new TRequiredValidator);
         $price->addValidation('Preço', new TRequiredValidator);

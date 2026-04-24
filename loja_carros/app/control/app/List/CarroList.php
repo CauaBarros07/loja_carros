@@ -22,11 +22,11 @@ class CarroList extends TPage
     {
         parent::__construct();
 
-        // Instancia a Datagrid com Wrapper do Bootstrap
+        
         $this->datagrid = new BootstrapDatagridWrapper(new TDataGrid);
         $this->datagrid->style = 'width: 100%';
 
-        // Colunas conforme os requisitos [cite: 20, 21, 22, 23, 24, 25]
+        
         $id     = new TDataGridColumn('id',     'ID',     'center', '10%');
         $marca  = new TDataGridColumn('brand',  'Marca',  'left',   '20%');
         $modelo = new TDataGridColumn('model',  'Modelo', 'left',   '30%');
@@ -34,7 +34,6 @@ class CarroList extends TPage
         $preco  = new TDataGridColumn('price',  'Preço',  'right',  '15%');
         $status = new TDataGridColumn('status', 'Status', 'center', '15%');
 
-        // Formatação de Preço
         $preco->setTransformer( function($value) {
             return 'R$ ' . number_format($value, 2, ',', '.');
         });
@@ -46,7 +45,7 @@ class CarroList extends TPage
         $this->datagrid->addColumn($preco);
         $this->datagrid->addColumn($status);
 
-        // Ações de Editar e Deletar [cite: 28, 29]
+        
         $action_edit = new TDataGridAction(['CarroForm', 'onEdit'], ['id' => '{id}']);
         $action_del  = new TDataGridAction([$this, 'onDelete'],     ['id' => '{id}']);
 

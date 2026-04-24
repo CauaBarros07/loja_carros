@@ -19,29 +19,28 @@ class Dashboard extends TPage
         parent::__construct();
 
         try {
-            // 1. ABRIR CONEXÃO
+            
             TTransaction::open('sample'); 
 
             $mes_atual = date('m');
             $ano_atual = date('Y');
 
-            // 2. BUSCAR DADOS PARA INDICADORES
+            
             $vendas_count = Venda::where('MONTH(sale_date)', '=', $mes_atual)
                                  ->where('YEAR(sale_date)', '=', $ano_atual)
                                  ->count();
-
+            
             $vendas_total = Venda::where('MONTH(sale_date)', '=', $mes_atual)
                                  ->where('YEAR(sale_date)', '=', $ano_atual)
                                  ->sumBy('sale_value');
 
-            // 3. BUSCAR ÚLTIMAS VENDAS (IMPORTANTE: load() aqui)
+            
             $ultimas_vendas = Venda::orderBy('id', 'desc')->take(10)->load();
 
-            // --- INTERFACE GRÁFICA ---
+            
             $vbox = new TVBox;
             $vbox->style = 'width: 100%';
 
-            // Blocos de Indicadores
             $div_indicadores = new TElement('div');
             $div_indicadores->class = "row";
 
@@ -61,10 +60,13 @@ class Dashboard extends TPage
 
             $div_indicadores->add($i1 = TElement::tag('div', $indicator1));
             $div_indicadores->add($i2 = TElement::tag('div', $indicator2));
+
             $i1->class = 'col-sm-6';
             $i2->class = 'col-sm-6';
 
-            // --- TABELA DE VENDAS ---
+            $div_indicadores->add( new GraficoBarras );
+
+            
             $panel_list = new TPanelGroup('Últimas Vendas Realizadas');
             $panel_list->style = 'margin-top: 20px; width: 100%';
 
@@ -72,10 +74,19 @@ class Dashboard extends TPage
             $this->datagrid->style = 'width: 100%';
 
             $this->datagrid->addColumn(new TDataGridColumn('id', 'ID', 'center', '10%'));
-            $this->datagrid->addColumn(new TDataGridColumn('carro->brand', 'Marca', 'left', '30%'));
-            $this->datagrid->addColumn(new TDataGridColumn('carro->model', 'Modelo', 'left', '30%'));
+            $this->datagrid->addColumn(new TDataGridColumn('carro->brand', 'Marca', 'left', '20%'));
+            $this->datagrid->addColumn(new TDataGridColumn('carro->model', 'Modelo', 'left', '20%'));
             
-            // Coluna de valor formatada
+            $column_date = new TDataGridColumn('sale_date', 'Data', 'center', '20%');
+            $column_date->setTransformer(function($value) {
+                if (!empty($value)) {
+                    return date('d/m/Y', strtotime($value));
+                }
+                return '';
+            });
+            $this->datagrid->addColumn($column_date);
+
+            
             $column_price = new TDataGridColumn('sale_value', 'Valor', 'right', '30%');
             $column_price->setTransformer(function($value){
                 return 'R$ ' . number_format($value, 2, ',', '.');
@@ -84,20 +95,20 @@ class Dashboard extends TPage
 
             $this->datagrid->createModel();
             
-            // Adicionando os itens na grade
+            
             if ($ultimas_vendas) {
                 $this->datagrid->addItems($ultimas_vendas);
             }
             
             $panel_list->add($this->datagrid);
 
-            // Montagem do Layout
+            
             $vbox->add($div_indicadores);
             $vbox->add($panel_list);
 
             parent::add($vbox);
 
-            // 4. SÓ FECHA A TRANSAÇÃO NO FINAL DE TUDO
+            
             TTransaction::close();
             
         } catch (Exception $e) {

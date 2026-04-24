@@ -3,7 +3,8 @@
 
 use Adianti\Control\TPage;
 use Adianti\Control\TAction;
-use Adianti\Control\TApplication; 
+use Adianti\Control\TApplication;
+use Adianti\Database\TCriteria;
 use Adianti\Database\TTransaction;
 use Adianti\Widget\Form\TEntry;
 use Adianti\Widget\Form\TDate;
@@ -25,15 +26,20 @@ class VendaForm extends TPage
 
         $this->form = new BootstrapFormBuilder('form_venda');
         $this->form->setFormTitle('Registrar Venda');
+        
+        // 1. Criamos o critério de filtragem
+        $criteria = new TCriteria;
+        // Filtra apenas carros onde o status é 'Disponível' (ajuste para o nome exato que usa no seu banco)
+        $criteria->add(new TFilter('status', '=', 'Disponível'));
 
-        // Campos [cite: 36-39]
+        // 2. Passamos o $criteria como o 7º parâmetro do TDBCombo
+        
         $id         = new TEntry('id');
-        // Relacionamento: mostra apenas carros disponíveis para novas vendas [cite: 41]
-        $car_id     = new TDBCombo('car_id', 'sample', 'Carro', 'id', '{brand} - {model}', 'model');
+        $car_id = new TDBCombo('car_id', 'sample', 'Carro', 'id', '{brand} - {model}', 'model', $criteria);
         $sale_date  = new TDate('sale_date');
         $sale_value = new TNumeric('sale_value', 2, ',', '.', true);
 
-        // Configurações
+        
         $id->setEditable(FALSE);
         $sale_date->setMask('dd/mm/yyyy');
         $sale_date->setValue(date('d/m/Y'));
@@ -47,7 +53,7 @@ class VendaForm extends TPage
         $this->form->addFields([new TLabel('Carro')], [$car_id]);
         $this->form->addFields([new TLabel('Data da Venda')], [$sale_date], [new TLabel('Valor da Venda')], [$sale_value]);
 
-        // Validações [cite: 69]
+        
         $car_id->addValidation('Carro', new TRequiredValidator);
         $sale_value->addValidation('Valor', new TRequiredValidator);
 
@@ -67,25 +73,24 @@ class VendaForm extends TPage
             $this->form->validate();
             $data = $this->form->getData();
 
-            // Regra de Negócio: Verificar se o carro ainda está disponível 
+             
             $carro = new Carro($data->car_id);
             if ($carro->status == 'Vendido' && empty($data->id)) {
                 throw new Exception('Este carro já foi vendido!');
             }
 
-            // Salva a Venda [cite: 34]
+            
             $venda = new Venda;
             $venda->fromArray((array) $data);
             $venda->sale_date = TDate::date2us($data->sale_date);
             $venda->store();
 
-            // Regra de Negócio: Atualizar status do carro para Vendido 
+            
             $carro->status = 'Vendido';
             $carro->store();
 
             TTransaction::close();
             new TMessage('info', 'Venda registrada e status do carro atualizado!');
-           // $this->form->setData($carro);
             \TApplication::loadPage('VendaList', 'onReload');
         } catch (Exception $e) {
             new TMessage('error', $e->getMessage());
@@ -93,12 +98,19 @@ class VendaForm extends TPage
         }
     }
 
-    public function onEdit($param)
+   public function onEdit($param)
     {
         if (isset($param['id'])) {
             try {
                 TTransaction::open('sample');
                 $venda = new Venda($param['id']);
+                
+                // CRIA UM CRITÉRIO QUE ACEITA O CARRO JÁ VENDIDO DESTA VENDA ESPECÍFICA
+                $criteria = new TCriteria;
+                $criteria->add(new TFilter('status', '=', 'Disponível'), TExpression::OR_OPERATOR);
+                $criteria->add(new TFilter('id', '=', $venda->car_id), TExpression::OR_OPERATOR);
+                $this->form->getField('car_id')->setCriteria($criteria);
+
                 $venda->sale_date = TDate::date2br($venda->sale_date);
                 $this->form->setData($venda);
                 TTransaction::close();

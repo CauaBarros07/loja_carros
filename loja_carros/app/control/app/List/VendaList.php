@@ -3,13 +3,13 @@
 
 use Adianti\Control\TPage;
 use Adianti\Control\TAction;
-use Adianti\Control\TApplication; // <-- ESSA LINHA É A QUE ESTÁ FALTANDO
+use Adianti\Control\TApplication; 
 use Adianti\Database\TTransaction;
 use Adianti\Widget\Form\TEntry;
 use Adianti\Widget\Form\TCombo;
 use Adianti\Widget\Form\TNumeric;
 use Adianti\Widget\Form\TLabel;
-use Adianti\Widget\Form\TRequiredValidator; // Aproveite e verifique se este também está aqui
+use Adianti\Widget\Form\TRequiredValidator; 
 use Adianti\Wrapper\BootstrapFormBuilder;
 use Adianti\Widget\Dialog\TMessage;
 use Adianti\Widget\Container\TVBox;
@@ -88,10 +88,10 @@ class VendaList extends TPage
     public static function Delete($param)
 {
     try {
-        TTransaction::open('sample'); // Nome do seu .ini
+        TTransaction::open('sample'); 
         
         $venda = new Venda($param['id']);
-        $carro = $venda->carro; // Usa o get_carro() do Model
+        $carro = $venda->carro; 
         
         if ($carro) {
             $carro->status = 'Disponível';
@@ -102,7 +102,7 @@ class VendaList extends TPage
         
         TTransaction::close();
         
-        // Recarrega a página
+        
         \TApplication::loadPage('VendaList', 'onReload');
         new TMessage('info', 'Venda excluída e status do carro atualizado!');
         
