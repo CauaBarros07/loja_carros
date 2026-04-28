@@ -159,7 +159,7 @@ class VendaList extends TPage
             $repository = new TRepository('Venda');
             $criteria = new TCriteria;
 
-            // Recupera filtros da sessão
+           
             $filters = TSession::getValue(__CLASS__ . '_filters');
             if ($filters) {
                 foreach ($filters as $filter) {
@@ -167,17 +167,15 @@ class VendaList extends TPage
                 }
             }
 
-            // --- INÍCIO DA CONVERSÃO DE CAMPOS ---
+            
             $order = isset($param['order']) ? $param['order'] : 'id';
             $direction = isset($param['direction']) ? $param['direction'] : 'desc';
 
-            // Dentro do seu onReload, no bloco de conversão que fizemos:
             if ($order == 'carro_marca') {
                 $order = "(SELECT brand FROM cars WHERE cars.id = sales.car_id)";
             } elseif ($order == 'carro_modelo') {
                 $order = "(SELECT model FROM cars WHERE cars.id = sales.car_id)";
             } elseif ($order == 'cliente_nome') {
-                // Busca o nome na tabela 'cliente' usando o id da venda
                 $order = "(SELECT nome FROM cliente WHERE cliente.id = sales.cliente_id)";
             }
 

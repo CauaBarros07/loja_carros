@@ -42,6 +42,13 @@ class ClienteForm extends TPage
         $email->addValidation('Email', new TEmailValidator);
 
         
+        $cpf->setMask('999.999.999-99');
+        $telefone->setMask('(99) 99999-9999');
+
+        
+        $cpf->addValidation('CPF', new TRequiredValidator);
+
+        
         $this->form->addFields([new TLabel('ID')], [$id]);
         $this->form->addFields([new TLabel('Nome')], [$nome]);
         $this->form->addFields([new TLabel('CPF')], [$cpf], [new TLabel('Email')], [$email]);
@@ -49,6 +56,7 @@ class ClienteForm extends TPage
 
         // Botões
         $this->form->addAction('Salvar', new TAction([$this, 'onSave']), 'fa:save green');
+        $this->form->addAction('Limpar', new TAction([$this, 'onClear']), 'fa:eraser red');
         $this->form->addActionLink('Voltar', new TAction(['VendaList', 'onReload']), 'fa:arrow-left red');
 
         $vbox = new TVBox;
@@ -61,17 +69,21 @@ class ClienteForm extends TPage
     {
         try {
             TTransaction::open('sample');
-            $data = $this->form->getData();
             
+            $this->form->validate(); 
+            
+            $data = $this->form->getData();
+
             $cliente = new Cliente;
             $cliente->fromArray((array) $data);
             $cliente->store();
 
             TTransaction::close();
+
+            $this->form->clear(); 
+            
             new TMessage('info', 'Cliente cadastrado com sucesso!');
-            
-            
-            //AdiantiCoreApplication::loadPage('VendaList', 'onReload');
+
             
         } catch (Exception $e) {
             new TMessage('error', $e->getMessage());
@@ -91,5 +103,9 @@ class ClienteForm extends TPage
                 new TMessage('error', $e->getMessage());
             }
         }
+    }
+    public function onClear()
+    {
+        $this->form->clear();
     }
 }

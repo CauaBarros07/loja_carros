@@ -63,9 +63,11 @@ class VendaForm extends TPage
 
         $car_id->addValidation('Carro', new TRequiredValidator);
         $sale_value->addValidation('Valor', new TRequiredValidator);
+        $cliente_id->addValidation('Cliente', new TRequiredValidator);
 
         $this->form->addAction('Confirmar Venda', new TAction([$this, 'onSave']), 'fa:check-circle green');
         $this->form->addAction('Limpar', new TAction([$this, 'onClear']), 'fa:eraser red');
+        $this->form->addActionLink('Voltar', new TAction(['VendaList', 'onReload']), 'fa:arrow-left orange');
 
         $vbox = new TVBox;
         $vbox->style = 'width: 100%';
@@ -98,7 +100,6 @@ class VendaForm extends TPage
 
             TTransaction::close();
             new TMessage('info', 'Venda registrada e status do carro atualizado!');
-            \TApplication::loadPage('VendaList', 'onReload');
         } catch (Exception $e) {
             new TMessage('error', $e->getMessage());
             TTransaction::rollback();
