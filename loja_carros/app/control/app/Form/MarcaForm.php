@@ -24,6 +24,7 @@ class MarcaForm extends TPage
         $this->form->addFields(['Nome da Marca'], [$name]);
 
         $this->form->addAction('Salvar', new TAction([$this, 'onSave']), 'fa:save green');
+        $this->form->addActionLink('Voltar', new TAction(['CarroList', 'onReload']), 'fa:arrow-left orange');
         
         parent::add($this->form);
     }
@@ -31,7 +32,7 @@ class MarcaForm extends TPage
     public function onSave($param)
     {
         try {
-            TTransaction::open('sample'); // Nome da sua conexão
+            TTransaction::open('sample'); 
             $data = $this->form->getData();
             
             $brand = new Marca;
@@ -46,7 +47,7 @@ class MarcaForm extends TPage
             TTransaction::rollback();
         }
     }
-    // No BrandForm.php
+    
 public function onEdit($param)
 {
     try {

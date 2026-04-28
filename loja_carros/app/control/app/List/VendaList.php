@@ -29,12 +29,12 @@ class VendaList extends TPage
     {
         parent::__construct();
 
-        // 1. Configuração do Formulário (Sem título para não criar a "caixa" extra)
+
         $this->form = new BootstrapFormBuilder('form_search_venda');
         $this->form->setProperty('style', 'border:none; box-shadow:none; margin:0; padding:10px;');
-      
-        //$this->datagrid->style .= '; cursor: default;';
-        
+
+
+
         $data_inicio = new TDate('data_inicio');
         $data_fim    = new TDate('data_fim');
         $data_inicio->setMask('dd/mm/yyyy');
@@ -42,18 +42,20 @@ class VendaList extends TPage
         $data_inicio->setSize('120px');
         $data_fim->setSize('120px');
 
-        // Adicionando os campos em uma linha única para ficar elegante
-        $row = $this->form->addFields( 
-            [new TLabel('Início:')], [$data_inicio], 
-            [new TLabel('Fim:')], [$data_fim] 
-        );
-        $row->layout = ['col-sm-2', 'col-sm-2', 'col-sm-2', 'col-sm-2'];
 
-        // Ações do formulário
+        $row = $this->form->addFields(
+            [new TLabel('Início:')],
+            [$data_inicio],
+            [new TLabel('Fim:')],
+            [$data_fim]
+        );
+        $row->layout = ['col-sm-1', 'col-sm-4', 'col-sm-1', 'col-sm-4'];
+
+
         $this->form->addAction('Buscar', new TAction([$this, 'onSearch']), 'fa:search blue');
         $this->form->addActionLink('Limpar', new TAction([$this, 'onClear']), 'fa:eraser red');
 
-        // 2. Configuração da Datagrid
+
         $this->datagrid = new BootstrapDatagridWrapper(new TDataGrid);
         $this->datagrid->style = 'width: 100%';
 
@@ -63,8 +65,41 @@ class VendaList extends TPage
         $marca   = new TDataGridColumn('carro->brand', 'Marca', 'left', '20%');
         $modelo  = new TDataGridColumn('carro->model', 'Modelo', 'left', '20%');
         $data    = new TDataGridColumn('sale_date', 'Data', 'center', '20%');
-        $cliente = new TDataGridColumn('cliente_nome', 'Cliente', 'left', '15%');
+        $cliente = new TDataGridColumn('cliente->nome', 'Cliente', 'left', '15%');
         $valor   = new TDataGridColumn('sale_value', 'Valor Venda', 'right', '15%');
+       
+
+        $cliente->setTransformer(function ($value, $object, $row) {
+            
+            $obj_cliente = $object->get_cliente();
+
+            if ($obj_cliente) {
+                
+                $container = new TElement('span');
+
+                
+                $container->add($obj_cliente->nome . ' ');
+
+                
+                $icon = new TElement('i');
+                $icon->{'class'} = 'fa fa-info-circle blue';
+                $icon->{'style'} = 'cursor:help; margin-left: 4px;'; 
+
+                
+                $tooltip = "CPF: {$obj_cliente->cpf} \n";
+                $tooltip .= "E-mail: {$obj_cliente->email} \n";
+                $tooltip .= "Tel: {$obj_cliente->telefone}";
+                $icon->{'title'} = $tooltip;
+
+                
+                $container->add($icon);
+
+                return $container;
+            }
+
+            return $value;
+        });
+
 
         $data->setTransformer(fn($v) => (!empty($v)) ? date('d/m/Y', strtotime($v)) : '');
         $valor->setTransformer(fn($v) => 'R$ ' . number_format($v, 2, ',', '.'));
@@ -78,17 +113,22 @@ class VendaList extends TPage
 
         $id->setAction(new TAction([$this, 'onReload']), ['order' => 'id']);
         $data->setAction(new TAction([$this, 'onReload']), ['order' => 'sale_date']);
+        $marca->setAction(new TAction([$this, 'onReload']), ['order' => 'carro_marca']);
+        $modelo->setAction(new TAction([$this, 'onReload']), ['order' => 'carro_modelo']);
+        $cliente->setAction(new TAction([$this, 'onReload']), ['order' => 'cliente_nome']);
+        $valor->setAction(new TAction([$this, 'onReload']), ['order' => 'sale_value']);
 
         $action_del = new TDataGridAction([$this, 'onDelete'], ['id' => '{id}']);
         $this->datagrid->addAction($action_del, 'Excluir', 'far:trash-alt red');
 
         $this->datagrid->createModel();
 
-        // 3. O PAINEL ÚNICO (Onde tudo fica dentro da mesma borda)
+
         $panel = new TPanelGroup('Registro de Vendas Realizadas');
         $panel->addHeaderActionLink('Registrar Venda', new TAction(['VendaForm', 'onEdit']), 'fa:shopping-cart blue');
-        
-        // Adiciona o formulário e a grade direto no painel principal
+        $panel->addHeaderActionLink('Novo Cliente', new TAction(['ClienteForm', 'onEdit']), 'fa:user-plus green');
+
+
         $panel->add($this->form);
         $panel->add($this->datagrid)->style = 'overflow-x:auto; border-top: 1px solid #eeeeee;';
 
@@ -100,11 +140,10 @@ class VendaList extends TPage
         $data = $this->form->getData();
         TSession::setValue(__CLASS__ . '_filters', NULL);
 
-        if (!empty($data->data_inicio) && !empty($data->data_fim)) 
-        {
+        if (!empty($data->data_inicio) && !empty($data->data_fim)) {
             $filter_ini = TDate::date2us($data->data_inicio);
             $filter_fim = TDate::date2us($data->data_fim);
-            
+
             $filters = [new TFilter('sale_date', 'BETWEEN', $filter_ini, $filter_fim)];
             TSession::setValue(__CLASS__ . '_filters', $filters);
         }
@@ -120,6 +159,7 @@ class VendaList extends TPage
             $repository = new TRepository('Venda');
             $criteria = new TCriteria;
 
+            // Recupera filtros da sessão
             $filters = TSession::getValue(__CLASS__ . '_filters');
             if ($filters) {
                 foreach ($filters as $filter) {
@@ -127,12 +167,25 @@ class VendaList extends TPage
                 }
             }
 
+            // --- INÍCIO DA CONVERSÃO DE CAMPOS ---
             $order = isset($param['order']) ? $param['order'] : 'id';
             $direction = isset($param['direction']) ? $param['direction'] : 'desc';
+
+            // Dentro do seu onReload, no bloco de conversão que fizemos:
+            if ($order == 'carro_marca') {
+                $order = "(SELECT brand FROM cars WHERE cars.id = sales.car_id)";
+            } elseif ($order == 'carro_modelo') {
+                $order = "(SELECT model FROM cars WHERE cars.id = sales.car_id)";
+            } elseif ($order == 'cliente_nome') {
+                // Busca o nome na tabela 'cliente' usando o id da venda
+                $order = "(SELECT nome FROM cliente WHERE cliente.id = sales.cliente_id)";
+            }
+
             $criteria->setProperty('order', $order);
             $criteria->setProperty('direction', $direction);
 
             $vendas = $repository->load($criteria);
+
             $this->datagrid->clear();
             if ($vendas) {
                 foreach ($vendas as $venda) {
@@ -142,7 +195,7 @@ class VendaList extends TPage
 
             TTransaction::close();
         } catch (Exception $e) {
-            new TMessage('error', $e->getMessage());
+            new TMessage('error', 'Erro ao carregar dados: ' . $e->getMessage());
             TTransaction::rollback();
         }
     }
@@ -173,7 +226,7 @@ class VendaList extends TPage
             }
             $venda->delete();
             TTransaction::close();
-            TApplication::loadPage('VendaList', 'onReload');
+            \Adianti\Core\AdiantiCoreApplication::loadPage('VendaList', 'onReload');
         } catch (Exception $e) {
             new TMessage('error', $e->getMessage());
             TTransaction::rollback();

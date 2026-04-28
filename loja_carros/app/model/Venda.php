@@ -2,7 +2,6 @@
 
 use Adianti\Database\TRecord;
 
-
 class Venda extends TRecord
 {
     const TABLENAME = 'sales';
@@ -13,17 +12,20 @@ class Venda extends TRecord
     {
         parent::__construct($id);
         parent::addAttribute('car_id');
+        parent::addAttribute('cliente_id'); 
         parent::addAttribute('sale_date');
         parent::addAttribute('sale_value');
-        parent::addAttribute('cliente_nome');
     }
 
-
+    
     public function get_carro()
     {
-        if (!empty($this->car_id)) {
-            return Carro::find($this->car_id);
-        }
-        return null;
+        return Carro::find($this->car_id);
+    }
+
+    
+    public function get_cliente()
+    {
+        return Cliente::find($this->cliente_id);
     }
 }

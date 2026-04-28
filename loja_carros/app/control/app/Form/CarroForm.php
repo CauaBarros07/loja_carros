@@ -75,6 +75,7 @@ class CarroForm extends TPage
 
         $this->form->addAction('Salvar', new TAction([$this, 'onSave']), 'fa:save green');
         $this->form->addAction('Limpar', new TAction([$this, 'onClear']), 'fa:eraser red');
+        $this->form->addActionLink('Voltar', new TAction(['CarroList', 'onReload']), 'fa:arrow-left orange');
 
         $vbox = new TVBox;
         $vbox->style = 'width: 100%';

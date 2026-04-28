@@ -48,16 +48,16 @@ class CarroList extends TPage
     $path = 'app/images/cars/' . $value;
 
     if (!empty($value) && file_exists($path)) {
-        // Criamos o HTML da imagem expandida para o JavaScript
+        
         $html = "<img src=\'{$path}\' style=\'width:100%; border-radius:5px;\'>";
         
-        // Criamos a imagem da miniatura com o comando de abrir o modal
+        
         $img = new TElement('img');
         $img->src = $path;
         $img->style = 'width:110px; height:70px; object-fit:cover; cursor:pointer';
         $img->class = 'img-thumbnail';
         
-        // O segredo está aqui: o clique chama o Bootbox (que o Adianti já tem) direto pelo navegador
+        
         $img->onclick = "bootbox.dialog({
             title: 'Visualizar Veículo',
             message: '{$html}',
@@ -79,7 +79,7 @@ class CarroList extends TPage
         $this->datagrid->addColumn($preco);
         $this->datagrid->addColumn($status);
 
-        // Defina as ações de ordenação para as colunas
+        
         $id->setAction(new TAction([$this, 'onReload']),     ['order' => 'id']);
         $marca->setAction(new TAction([$this, 'onReload']),  ['order' => 'brand']);
         $modelo->setAction(new TAction([$this, 'onReload']), ['order' => 'model']);
@@ -182,11 +182,10 @@ class CarroList extends TPage
     $imagem = $param['imagem'] ?? '';
     $path = 'app/images/cars/' . $imagem;
 
-    // Criamos o HTML da imagem que será exibida
+    
     $html = "<img src='{$path}' style='width:100%; border-radius:5px;'>";
 
-    // Usamos o TScript para dar um comando direto ao JavaScript do navegador
-    // Isso abre o Modal do Bootstrap sem precisar carregar classes de Container
+    
     \Adianti\Widget\Base\TScript::create("
         bootbox.dialog({
             title: 'Visualizar Veículo',
