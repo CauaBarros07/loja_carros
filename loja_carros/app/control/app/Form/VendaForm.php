@@ -38,6 +38,7 @@ class VendaForm extends TPage
         $car_id = new TDBCombo('car_id', 'sample', 'Carro', 'id', '{brand} - {model}', 'model', $criteria);
         $sale_date  = new TDate('sale_date');
         $sale_value = new TNumeric('sale_value', 2, ',', '.', true);
+        $cliente_nome = new TEntry('cliente_nome');
 
         
         $id->setEditable(FALSE);
@@ -48,10 +49,12 @@ class VendaForm extends TPage
         $car_id->setSize('100%');
         $sale_date->setSize('100%');
         $sale_value->setSize('100%');
+        $cliente_nome->setSize('100%');
 
         $this->form->addFields([new TLabel('ID')], [$id]);
         $this->form->addFields([new TLabel('Carro')], [$car_id]);
         $this->form->addFields([new TLabel('Data da Venda')], [$sale_date], [new TLabel('Valor da Venda')], [$sale_value]);
+        $this->form->addFields([new TLabel('Nome do Cliente')], [$cliente_nome]);
 
         
         $car_id->addValidation('Carro', new TRequiredValidator);

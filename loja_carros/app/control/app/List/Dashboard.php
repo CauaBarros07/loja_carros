@@ -74,8 +74,10 @@ class Dashboard extends TPage
             $this->datagrid->style = 'width: 100%';
 
             $this->datagrid->addColumn(new TDataGridColumn('id', 'ID', 'center', '10%'));
-            $this->datagrid->addColumn(new TDataGridColumn('carro->brand', 'Marca', 'left', '20%'));
-            $this->datagrid->addColumn(new TDataGridColumn('carro->model', 'Modelo', 'left', '20%'));
+            $this->datagrid->addColumn(new TDataGridColumn('carro->brand', 'Marca', 'left', '15%'));
+            $this->datagrid->addColumn(new TDataGridColumn('carro->model', 'Modelo', 'left', '15%'));
+            $this->datagrid->addColumn(new TDataGridColumn('cliente_nome', 'Cliente', 'left', '20%'));
+            
             
             $column_date = new TDataGridColumn('sale_date', 'Data', 'center', '20%');
             $column_date->setTransformer(function($value) {

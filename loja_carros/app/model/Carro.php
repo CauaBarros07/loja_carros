@@ -17,13 +17,12 @@ class Carro extends TRecord
         parent::addAttribute('year');
         parent::addAttribute('price');
         parent::addAttribute('status');
+        parent::addAttribute('image');
     }
 
   
     public function get_venda()
     {
-
-        // Buscamos na tabela Sale onde car_id é o ID deste carro
         return Venda::where('car_id', '=', $this->id)->first();
     }
 }

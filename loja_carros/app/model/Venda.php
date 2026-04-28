@@ -15,6 +15,7 @@ class Venda extends TRecord
         parent::addAttribute('car_id');
         parent::addAttribute('sale_date');
         parent::addAttribute('sale_value');
+        parent::addAttribute('cliente_nome');
     }
 
 
