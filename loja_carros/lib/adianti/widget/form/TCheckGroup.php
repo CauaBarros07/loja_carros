@@ -16,7 +16,7 @@ use Exception;
 /**
  * A group of CheckButton's
  *
- * @version    8.4
+ * @version    8.5
  * @package    widget
  * @subpackage form
  * @author     Pablo Dall'Oglio

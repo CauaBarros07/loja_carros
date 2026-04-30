@@ -17,7 +17,7 @@ use Closure;
 /**
  * Base class to construct all the widgets
  *
- * @version    8.4
+ * @version    8.5
  * @package    widget
  * @subpackage form
  * @author     Pablo Dall'Oglio

@@ -16,7 +16,7 @@ use Exception;
 /**
  * Manage Database transactions
  *
- * @version    8.4
+ * @version    8.5
  * @package    database
  * @author     Pablo Dall'Oglio
  * @copyright  Copyright (c) 2006 Adianti Solutions Ltd. (http://www.adianti.com.br)
@@ -285,6 +285,33 @@ class TTransaction
         {
             return self::$dbinfo[self::$counter];
         }
+    }
+    
+    /**
+     * Get database enclosing delimiters
+     * 
+     */
+    public static function getEnclosingDelimiters()
+    {
+        $info = self::getDatabaseInfo();
+        
+        if (in_array($info['type'], ['mssql', 'sqlsrv', 'dblib'] ))
+        {
+            $closing = '[]';
+        }
+        else if (in_array($info['type'], ['mysql'] ))
+        {
+            $closing = '``';
+        }
+        else
+        {
+            $closing = '""';
+        }
+        
+        $closing_start = trim(substr($closing, 0,1));
+        $closing_end   = trim(substr($closing, 1,1));
+        
+        return [$closing_start, $closing_end];
     }
     
     /**

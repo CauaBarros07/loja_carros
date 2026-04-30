@@ -1,5 +1,8 @@
 <?php
-if (isset($_GET['file']))
+require_once 'init.php';
+new TSession;
+
+if (isset($_GET['file']) AND TSession::getValue('logged') )
 {
     $file = $_GET['file'];
     

@@ -7,7 +7,7 @@ use Adianti\Util\AdiantiStringConversion;
 /**
  * SourceCode View
  *
- * @version    8.4
+ * @version    8.5
  * @package    widget
  * @subpackage util
  * @author     Pablo Dall'Oglio

@@ -21,6 +21,8 @@ use Adianti\Widget\Base\TScript;
 class CarroList extends TPage
 {
     private $datagrid;
+    private $pageNavigation;
+    private $limit = 10;
 
     public function __construct()
     {
@@ -30,6 +32,12 @@ class CarroList extends TPage
         $this->datagrid = new BootstrapDatagridWrapper(new TDataGrid);
         $this->datagrid->style = 'width: 100%';
         $this->datagrid->disableDefaultClick();
+
+        $input_search = new TEntry('input_search');
+        $input_search->placeholder = 'Pesquisar na listagem...';
+        $input_search->setSize('100%');
+
+        $this->datagrid->enableSearch($input_search, 'brand, model, year, status');
 
 
         $id     = new TDataGridColumn('id',     'ID',     'center', '10%');
@@ -45,31 +53,31 @@ class CarroList extends TPage
         });
 
         $image->setTransformer(function ($value, $object, $row) {
-    $path = 'app/images/cars/' . $value;
+            $path = 'app/images/cars/' . $value;
 
-    if (!empty($value) && file_exists($path)) {
-        
-        $html = "<img src=\'{$path}\' style=\'width:100%; border-radius:5px;\'>";
-        
-        
-        $img = new TElement('img');
-        $img->src = $path;
-        $img->style = 'width:110px; height:70px; object-fit:cover; cursor:pointer';
-        $img->class = 'img-thumbnail';
-        
-        
-        $img->onclick = "bootbox.dialog({
+            if (!empty($value) && file_exists($path)) {
+
+                $html = "<img src=\'{$path}\' style=\'width:100%; border-radius:5px;\'>";
+
+
+                $img = new TElement('img');
+                $img->src = $path;
+                $img->style = 'width:110px; height:70px; object-fit:cover; cursor:pointer';
+                $img->class = 'img-thumbnail';
+
+
+                $img->onclick = "bootbox.dialog({
             title: 'Visualizar Veículo',
             message: '{$html}',
             size: 'large',
             onEscape: true,
             backdrop: true
         });";
-        
-        return $img;
-    }
-    return "<i class='fas fa-camera' style='color:#ccc'></i>";
-});
+
+                return $img;
+            }
+            return "<i class='fas fa-camera' style='color:#ccc'></i>";
+        });
 
         $this->datagrid->addColumn($id);
         $this->datagrid->addColumn($marca);
@@ -79,7 +87,7 @@ class CarroList extends TPage
         $this->datagrid->addColumn($preco);
         $this->datagrid->addColumn($status);
 
-        
+
         $id->setAction(new TAction([$this, 'onReload']),     ['order' => 'id']);
         $marca->setAction(new TAction([$this, 'onReload']),  ['order' => 'brand']);
         $modelo->setAction(new TAction([$this, 'onReload']), ['order' => 'model']);
@@ -91,15 +99,42 @@ class CarroList extends TPage
         $action_edit = new TDataGridAction(['CarroForm', 'onEdit'], ['id' => '{id}']);
         $action_del  = new TDataGridAction([$this, 'onDelete'],     ['id' => '{id}']);
 
+        // Define a regra: Exibir se o login for diferente de 'vendedor'
+        $permitido = function () {
+            return TSession::getValue('login') !== 'vendedor';
+        };
+
+        // Aplica a condição aos botões
+        $action_edit->setDisplayCondition($permitido);
+        $action_del->setDisplayCondition($permitido);
+
         $this->datagrid->addAction($action_edit, 'Editar', 'fa:edit blue');
         $this->datagrid->addAction($action_del,  'Excluir', 'far:trash-alt red');
 
         $this->datagrid->createModel();
 
+        $this->pageNavigation = new TPageNavigation;
+        $this->pageNavigation->setAction(new TAction([$this, 'onReload']));
+        $this->pageNavigation->setWidth($this->datagrid->getWidth());
+
         $panel = new TPanelGroup('Listagem de Carros');
-        $panel->addHeaderActionLink('Novo Carro', new TAction(['CarroForm', 'onEdit']), 'fa:plus green');
-        $panel->addHeaderActionLink('Gerenciar Marcas', new TAction(['MarcaForm', 'onEdit']), 'fa:tags blue');
+
+        // Obtém o login atual
+        $login = TSession::getValue('login');
+
+        // SE o login NÃO FOR 'vendedor', ele mostra os botões
+        if ($login !== 'vendedor') {
+            $panel->addHeaderActionLink('Novo Carro', new TAction(['CarroForm', 'onEdit']), 'fa:plus green');
+            $panel->addHeaderActionLink('Gerenciar Marcas', new TAction(['MarcaForm', 'onEdit']), 'fa:tags blue');
+        }
         $panel->add($this->datagrid)->style = 'overflow-x:auto';
+        $panel->addFooter($this->pageNavigation);
+
+        $input_search->setSize('250px');
+        $input_search->style = 'margin-left: 10px; height: 30px; padding: 2px 5px;';
+
+        $panel->addHeaderWidget($input_search);
+
 
         $vbox = new TVBox;
         $vbox->style = 'width: 100%';
@@ -115,6 +150,9 @@ class CarroList extends TPage
 
 
             $criteria = new TCriteria;
+
+            $criteria->setProperty('limit', $this->limit); // Define quantos itens por página
+            $criteria->setProperties($param); // Lê a página atual e a ordenação dos parâmetros da URL
 
 
             if (isset($param['order'])) {
@@ -136,6 +174,14 @@ class CarroList extends TPage
                     $this->datagrid->addItem($carro);
                 }
             }
+
+
+            $criteria->resetProperties(); // Limpa limit e offset para contar o total real
+            $count = $repository->count($criteria);
+            $this->pageNavigation->setCount($count); // Total de registros
+            $this->pageNavigation->setProperties($param); // Mantém estado da ordenação
+            $this->pageNavigation->setLimit($this->limit); // Quantos por página
+
             TTransaction::close();
         } catch (Exception $e) {
             new TMessage('error', $e->getMessage());
@@ -178,15 +224,15 @@ class CarroList extends TPage
     }
 
     public static function onExibirImagem($param)
-{
-    $imagem = $param['imagem'] ?? '';
-    $path = 'app/images/cars/' . $imagem;
+    {
+        $imagem = $param['imagem'] ?? '';
+        $path = 'app/images/cars/' . $imagem;
 
-    
-    $html = "<img src='{$path}' style='width:100%; border-radius:5px;'>";
 
-    
-    \Adianti\Widget\Base\TScript::create("
+        $html = "<img src='{$path}' style='width:100%; border-radius:5px;'>";
+
+
+        \Adianti\Widget\Base\TScript::create("
         bootbox.dialog({
             title: 'Visualizar Veículo',
             message: '{$html}',
@@ -195,7 +241,7 @@ class CarroList extends TPage
             backdrop: true
         });
     ");
-}
+    }
 
     public function show()
     {

@@ -169,7 +169,15 @@ table.tdatagrid_body tr td input
     padding-right: 3px;
 }
 
+table .tdatagrid_group td
+{
+    background: #c9ccd3;
+}
 
+table tr.tdatagrid_group:nth-of-type(odd) > td
+{
+    background: #c7cbd4 !important;
+}
 
 /** hiddable **/
 @media screen and (max-width: 100px) 

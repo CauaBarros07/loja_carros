@@ -2,7 +2,7 @@ Copyright (c) 2006, Adianti Solutions Ltd.
 All rights reserved.
 
 This license is a legal agreement between you and Adianti Solutions Ltd.
-for the use of Adianti Framework (the "Software" or the "Framework"). By obtaining the Software
+for the use of Adianti Template (the "Software" or the "Template"). By obtaining the Software
 you agree to comply with the terms and conditions of this license.
 
 Permitted Use
@@ -20,10 +20,9 @@ with or without modification, for any purpose, provided that the following condi
        Adianti Framework in their documentation and/or other materials provided with the distribution.
     6) Products derived from the Software may not be called "Adianti", nor may "Adianti" appear in their
        name, without prior written permission from Adianti Solutions Ltd.
-    7) Derivative works known as Forks (here defined as when you obtain the original Framework, make
-       modifications to it, and redistribute it as a new, independent, and separate development
-       framework, creating a distinct and separate piece of software) must be distributed under
-       the same terms as the license of the original Framework.
+    7) You can't re-distribute or make available the Software as-is, as a stock item.
+       You can't re-distribute or make available the Software in another software engineering tool
+       (a software application that helps software developers create, maintain, and manage software).
 
 Copyright holder rights
 =======================

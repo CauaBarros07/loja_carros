@@ -15,7 +15,7 @@ use Exception;
 /**
  * Multi Search Widget
  *
- * @version    8.4
+ * @version    8.5
  * @package    widget
  * @subpackage form
  * @author     Pablo Dall'Oglio

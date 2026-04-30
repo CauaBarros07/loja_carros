@@ -9,7 +9,7 @@ use Adianti\Widget\Form\TLabel;
 /**
  * CheckButton widget
  *
- * @version    8.4
+ * @version    8.5
  * @package    widget
  * @subpackage form
  * @author     Pablo Dall'Oglio

@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => 'd6714cce6f9d63fb61b2965a3067128a3875765a',
+    'reference' => 'b9242b2926dde6901b1c25b1addea0c0d0200993',
     'name' => '__root__',
   ),
   'versions' => 
@@ -18,7 +18,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => 'd6714cce6f9d63fb61b2965a3067128a3875765a',
+      'reference' => 'b9242b2926dde6901b1c25b1addea0c0d0200993',
     ),
     'adianti/barcode-document' => 
     array (
@@ -77,12 +77,12 @@
     ),
     'bacon/bacon-qr-code' => 
     array (
-      'pretty_version' => 'v3.0.3',
-      'version' => '3.0.3.0',
+      'pretty_version' => 'v3.1.1',
+      'version' => '3.1.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => '36a1cb2b81493fa5b82e50bf8068bf84d1542563',
+      'reference' => '4da2233e72eeecd9be3b62e0dc2cc9ed8e2e31c2',
     ),
     'dasprid/enum' => 
     array (
@@ -95,30 +95,30 @@
     ),
     'dompdf/dompdf' => 
     array (
-      'pretty_version' => 'v3.1.4',
-      'version' => '3.1.4.0',
+      'pretty_version' => 'v3.1.5',
+      'version' => '3.1.5.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'db712c90c5b9868df3600e64e68da62e78a34623',
+      'reference' => 'f11ead23a8a76d0ff9bbc6c7c8fd7e05ca328496',
     ),
     'dompdf/php-font-lib' => 
     array (
-      'pretty_version' => '1.0.1',
-      'version' => '1.0.1.0',
+      'pretty_version' => '1.0.2',
+      'version' => '1.0.2.0',
       'aliases' => 
       array (
       ),
-      'reference' => '6137b7d4232b7f16c882c75e4ca3991dbcf6fe2d',
+      'reference' => 'a6e9a688a2a80016ac080b97be73d3e10c444c9a',
     ),
     'dompdf/php-svg-lib' => 
     array (
-      'pretty_version' => '1.0.0',
-      'version' => '1.0.0.0',
+      'pretty_version' => '1.0.2',
+      'version' => '1.0.2.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'eb045e518185298eb6ff8d80d0d0c6b17aecd9af',
+      'reference' => '8259ffb930817e72b1ff1caef5d226501f3dfeb1',
     ),
     'firebase/php-jwt' => 
     array (
@@ -243,12 +243,12 @@
     ),
     'picqer/php-barcode-generator' => 
     array (
-      'pretty_version' => 'v3.2.3',
-      'version' => '3.2.3.0',
+      'pretty_version' => 'v3.2.4',
+      'version' => '3.2.4.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'fbb1de7454fcc8600133818bc1103abeb86479a4',
+      'reference' => '16a5cfb74eb8b7a0aa2e60427d98599aa8259380',
     ),
     'psr/clock' => 
     array (
@@ -261,21 +261,21 @@
     ),
     'sabberworm/php-css-parser' => 
     array (
-      'pretty_version' => 'v8.9.0',
-      'version' => '8.9.0.0',
+      'pretty_version' => 'v9.3.0',
+      'version' => '9.3.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'd8e916507b88e389e26d4ab03c904a082aa66bb9',
+      'reference' => '88dbd0f7f91abbfe4402d0a3071e9ff4d81ed949',
     ),
     'spomky-labs/otphp' => 
     array (
-      'pretty_version' => '11.3.0',
-      'version' => '11.3.0.0',
+      'pretty_version' => '11.4.2',
+      'version' => '11.4.2.0',
       'aliases' => 
       array (
       ),
-      'reference' => '2d8ccb5fc992b9cc65ef321fa4f00fefdb3f4b33',
+      'reference' => '2a1b503fd1c1a5c751ab3c5cd37f2d2d26ab74ad',
     ),
     'symfony/deprecation-contracts' => 
     array (
@@ -294,6 +294,15 @@
       array (
       ),
       'reference' => '872339ffd38d261c4417ea1855428b1b4ff9abf1',
+    ),
+    'thecodingmachine/safe' => 
+    array (
+      'pretty_version' => 'v3.4.0',
+      'version' => '3.4.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '705683a25bacf0d4860c7dea4d7947bfd09eea19',
     ),
   ),
 );

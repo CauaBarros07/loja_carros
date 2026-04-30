@@ -1081,6 +1081,16 @@ table.vertical-middle td
     width: 100vw;
 }
 
+.container-fluid
+{
+    height: 100%;
+}
+
+#adianti_div_content
+{
+    height: 100%;
+}
+
 @media (min-width:768px) {
     .content {
         max-width: auto;
@@ -1110,7 +1120,15 @@ body.boxed-layout .footer>.container-fluid {
 .right-mailbox.nopadding .card-body
 {
     padding: 0;
-}@media (max-width:767.98px) {
+}
+/****************************** MOBILE **************************************/
+
+.display-mobile
+{
+    display: none;
+}
+
+@media (max-width:767.98px) {
     #sidebar.collapsed {
         margin-left: calc(-1 * var(--ad-menu-size));
     }
@@ -1131,6 +1149,11 @@ body.boxed-layout .footer>.container-fluid {
     .hide-mobile
     {
         display: none !important;
+    }
+    
+    .display-mobile
+    {
+        display: flex !important;
     }
     
     .card.mobile .card-header

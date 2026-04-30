@@ -13,7 +13,7 @@ use Exception;
 /**
  * Text Widget (also known as Memo)
  *
- * @version    8.4
+ * @version    8.5
  * @package    widget
  * @subpackage form
  * @author     Pablo Dall'Oglio

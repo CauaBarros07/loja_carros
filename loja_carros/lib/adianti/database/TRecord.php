@@ -24,7 +24,7 @@ use Traversable;
 /**
  * Base class for Active Records
  *
- * @version    8.4
+ * @version    8.5
  * @package    database
  * @author     Pablo Dall'Oglio
  * @copyright  Copyright (c) 2006 Adianti Solutions Ltd. (http://www.adianti.com.br)
@@ -761,6 +761,16 @@ abstract class TRecord implements IteratorAggregate
                                      bin2hex(chr((ord(random_bytes(1)) & 0x3F) | 0x80)) . bin2hex(random_bytes(1)),
                                      bin2hex(random_bytes(6))
                                  ]);
+                }
+                else if ((defined("{$class}::IDPOLICY")) AND (constant("{$class}::IDPOLICY") == 'uuid7'))
+                {
+                    $this->$pk = implode('-', [
+                        bin2hex(pack('Nn', (int)(microtime(true) * 1000) >> 16, (int)(microtime(true) * 1000) & 0xFFFF)),
+                        bin2hex(random_bytes(2)),
+                        bin2hex(chr((ord(random_bytes(1)) & 0x0F) | 0x70)) . bin2hex(random_bytes(1)),
+                        bin2hex(chr((ord(random_bytes(1)) & 0x3F) | 0x80)) . bin2hex(random_bytes(1)),
+                        bin2hex(random_bytes(6))
+                    ]);
                 }
                 else
                 {

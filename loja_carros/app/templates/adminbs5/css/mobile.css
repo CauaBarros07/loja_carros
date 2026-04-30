@@ -1,3 +1,11 @@
+
+/****************************** MOBILE **************************************/
+
+.display-mobile
+{
+    display: none;
+}
+
 @media (max-width:767.98px) {
     #sidebar.collapsed {
         margin-left: calc(-1 * var(--ad-menu-size));
@@ -19,6 +27,11 @@
     .hide-mobile
     {
         display: none !important;
+    }
+    
+    .display-mobile
+    {
+        display: flex !important;
     }
     
     .card.mobile .card-header

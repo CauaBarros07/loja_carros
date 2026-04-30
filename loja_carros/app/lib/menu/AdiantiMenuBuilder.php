@@ -1,7 +1,7 @@
 <?php
 class AdiantiMenuBuilder
 {
-    const CHECK_PERMISSION = null;
+    const CHECK_PERMISSION = ['SystemPermission', 'checkPermission'];
     
     /**
      * Parse main menu and converts into HTML
